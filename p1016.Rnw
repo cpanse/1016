@@ -1,10 +1,296 @@
-view: Rposter.pdf
-	open $<
-Rposter.pdf: Rposter.tex
-	pdflatex $< && pdflatex $< && pdflatex $<
+%\VignetteIndexEntry{EuroBioc 2019 poster (in portrait) }
+%\documentclass[landscape,a0,draft]{a0poster}
+\documentclass[portrait,a0]{a0poster}
 
-Rposter.tex: Rposter.Rnw poster.bib
-	R CMD Sweave $<
-clean:
-	$(RM) *.aux *.bbl *.blg *.log *.out *.pdf *.ps Rposter.tex
-	
+\usepackage{Sweave}
+\setkeys{Gin}{width=0.8\textwidth}
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{float}
+\usepackage{subfigure}
+\usepackage{sidecap}
+\usepackage[scaled]{helvet}
+\graphicspath{{./graphics/}}
+\usepackage{colortbl}
+\usepackage[font={scriptsize}]{caption}
+\usepackage{xcolor}
+\usepackage[colorlinks = true,
+            linkcolor = black,
+            urlcolor  = black,
+            citecolor = blue,
+            anchorcolor = black]{hyperref}
+
+\usepackage{hvqrurl}
+
+\usepackage{tabularx}
+
+\addtolength{\textwidth}{1cm}
+\addtolength{\oddsidemargin}{-1cm}
+\setlength{\topmargin}{-2.6cm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\footskip}{0cm}
+\setlength{\columnsep}{3cm}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{2ex}
+\pagestyle{empty}
+\newcommand*\code[1]{\texttt{\emph{#1}}}
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\renewcommand{\familydefault}{phv}
+\renewcommand*\familydefault{\sfdefault}
+\definecolor{NTNUBlue}{rgb}{0,0.6,1}
+\definecolor{FGCZ}{rgb}{0,0.6,1}
+\makeatletter
+\renewcommand{\section}{\@startsection
+        {section}%                          % the name
+        {1}%                                % the level
+        {0mm}%                              % the indent
+        {-\baselineskip}%                   % the beforeskip
+        {1mm}%                              % the afterskip
+        {\Large\color{NTNUBlue}\bfseries}}% % the style
+\renewcommand{\subsection}{\@startsection
+        {subsection}%                       % the name
+        {2}%                                % the level
+        {0mm}%                              % the indent
+        {-0.9\baselineskip}%                % the beforeskip
+        {1mm}%                              % the afterskip
+        {\large\color{NTNUBlue}\bfseries}}% % the style
+\renewcommand{\subsubsection}{\@startsection
+        {subsubsection}%                    % the name
+        {3}%                                % the level
+        {0mm}%                              % the indent
+        {-0.7\baselineskip}%                % the beforeskip
+        {1mm}%                              % the afterskip
+        {\color{NTNUBlue}\bfseries}}% % the style
+\makeatother
+
+\def\subfigtopskip{-1pt}       % Length from the top of the subfigure box to
+                               %   the begining of the FIGURE box.
+\def\subfigbottomskip{-1pt}    % Length from the bottom of the CAPTION to
+                               %   the bottom of the subfigure.
+\def\subfigcapskip{-1pt}       % Length from the bottom of the FIGURE to the
+                               %   begining of the CAPTION.
+\def\subfigcapmargin{-1pt}     % Indentation of the caption from the sides
+                               %   of the subfigure box.
+
+\usepackage{eso-pic}
+\newcommand\BackgroundPic{
+\put(0,0){
+\parbox[b][\paperheight]{\paperwidth}{%
+\vfill
+\centering
+\vfill
+}}}
+
+
+\usepackage{fancyvrb} % extended verbatim environments
+\fvset{fontsize=\tiny}% default font size for fancy-verbatim environments
+
+\newcommand*\rawR{\textbf{{rawR}}}
+\newcommand*\Spectra{\textbf{{Spectra}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  POSTER HEADER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+<<style-Sweave, eval=TRUE, echo=FALSE, results=tex>>=
+options(prompt = "R> ", continue = "+  ", width = 60, useFancyQuotes = FALSE)
+@
+
+
+\newcommand*\fgcz{Functional Genomics Center Zurich, Swiss Federal Institute of
+Technology Zurich~\texttt{|}~
+University of Zurich, Winterthurerstr. 190, CH-8057 Zurich, Switzerland.}
+
+
+\hspace{-1.5cm}
+\resizebox{\paperwidth}{!}{\colorbox{black}{
+\includegraphics[trim={0 0 1 1},clip,keepaspectratio=true,height=5cm]{FGCZ_l}
+\includegraphics[keepaspectratio=true,height=5cm]{FGCZ_c}
+\includegraphics[keepaspectratio=true,height=5cm]{FGCZ_r}
+\includegraphics[keepaspectratio=true,height=5cm]{graphics/rawRqr-code}
+\fbox{\colorbox{white}{1016}}
+}
+}\\[2cm]
+
+
+\vspace{-0.5cm}
+\parbox{\textwidth}{
+\centering
+\resizebox{\textwidth}{!}{Bring Orbitrap Mass Spectrometry Data to Life; Fast and Colorful}% -- the Bioconductor packages rawrr and rawDiag}
+\\[1.0cm]
+\Large Witold~E.~Wolski, Tobias~Kockmann, Martina~Zanella, Alaa~Othmann, Michel~Reid, Christian~Panse$^\diamond$\\[0.5cm]
+Functional Genomics Center Zurich, Swiss Federal Institute of Technology Zurich~\texttt{|}~ University of Zurich
+}\\
+\vspace{1.0cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  POSTER CONTENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{multicols}{3}
+
+\begin{abstract}
+\input abstract
+\end{abstract}
+ 
+\section{Architecture}
+rawDiag provides the wrapper function readRaw using the rawrr package methods rawrr::readIndex, rawrr::readTrailer, and rawrr::readChromatogram to read proprietary mass spectrometer generated data by invoking third-party managed methods through a system2 text connection. The rawrr package provides the entire stack below, which rawDiag utilizes.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\columnwidth, keepaspectratio]{graphicsMetabolomics2024/arch}
+\caption{Softwarestack~\texttt{|}~Architecture}
+\end{figure}
+
+\section{Input data}
+
+<<require, eval=T>>=
+stopifnot(require(protViz),
+          require(rawrr),
+          require(rawDiag),
+          file.exists("helper.R"))
+source("helper.R")
+
+# input
+inputDir <- file.path(Sys.getenv("HOME"),
+                      "Downloads",
+                      "othman_20240501_OT_AT_Comp_Lx_30mm_2min_NIST")
+
+patternTop35 <- "Lx_30mm_1ml_2min_OT_AT_Top35_MS1it10_MS2it2_2NIST_SRM1950_[1-5].raw$"
+
+list.files(inputDir,
+           full.names = TRUE, 
+           pattern = patternTop35) -> RAW
+@
+
+\section{Application}
+\paragraph{TIC}
+<<tic>>=
+RAW |>
+  lapply(FUN = rawrr::readChromatogram,
+       type = "tic",
+       filter = "Ms") -> ticMs
+@
+<<plot0, eval = TRUE, fig = TRUE, width=8, height=8, include=FALSE>>=
+op <- par(mfcol = c(5, 1), mar = c(4, 4, 1, 1))
+ticMs |> lapply(FUN = plot) -> dump
+@
+\includegraphics[width=1.0\columnwidth, keepaspectratio]{Rposter-plot0}
+
+\paragraph{Demonstrate mass shift}
+<<xicMassShift>>=
+.xicMassShift
+parallel::mclapply(RAW, FUN = .xicMassShift, mass = c(758.5694, 760.5851)) |>
+  Reduce(f = rbind) -> xicMassShift
+@
+
+<<plot1a, eval = TRUE, fig = TRUE, width=8, height=5, include=FALSE>>=
+lattice::xyplot(data = xicMassShift,
+                value ~ times |  as.factor(mass),
+                ylim = c(-1e-3, 1e-3),
+                scales = "free",
+                panel = function(...){
+                    lattice::panel.xyplot(...)
+                    lattice::panel.abline(h = 0, col='grey')
+                },
+                subset = (attribute == "mzDiff"),
+                groups = file,
+                auto.key = list(space = "bottom"),
+                type = "b",
+                ylab = "m/z error [Da]",
+                layout = c(2, 1))
+@
+
+\includegraphics[width=1.0\columnwidth, keepaspectratio]{Rposter-plot1a}
+
+<<plot1b, eval = TRUE, fig = TRUE, width=8, height=5, include=FALSE>>=
+lattice::xyplot(data = xicMassShift,
+                value ~ times |  as.factor(mass),
+                scale = "free",
+                subset = attribute == "intensities",
+                groups = file,
+                auto.key = list(space = "bottom"),
+                type = "b",
+                ylab = "intensities",
+                layout = c(2, 1))
+@
+
+\includegraphics[width=1.0\columnwidth, keepaspectratio]{Rposter-plot1b}
+
+\paragraph{Visualize cycle time}
+<<plot2, eval = TRUE, fig = TRUE, width=8, height=8, include=FALSE>>=
+parallel::mclapply(RAW, FUN = rawDiag::readRaw) |>
+  Reduce(f = rbind) -> trailer
+
+rawDiag::plotCycleTime(trailer, method = "violin") +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1))
+@
+\includegraphics[width=1.0\columnwidth, keepaspectratio]{Rposter-plot2}
+
+<<plot3, eval = TRUE, fig = TRUE, width=8, height=4, include=FALSE>>=
+rawDiag::plotCycleTime(trailer, method = "overlay")
+@
+\includegraphics[width=1.0\columnwidth, keepaspectratio]{Rposter-plot3}
+
+\paragraph{Identification using MetaboAnnotation}
+<<plot4, eval = TRUE, fig = TRUE, width=8, height=4, include=FALSE>>=
+"./fgcz_custom.msp" -> mspFiles
+
+stopifnot(require(MsBackendRawFileReader), 
+    require(MetaboAnnotation),
+    require(Spectra))
+
+Spectra::backendInitialize(MsBackendMsp::MsBackendMsp(),
+                           file = mspFiles) |>
+  Spectra::Spectra() -> msp
+
+Spectra::backendInitialize(MsBackendRawFileReader::MsBackendRawFileReader(),
+                           file = RAW) |> 
+  Spectra::Spectra()  -> S
+
+csp <- MetaboAnnotation::CompareSpectraParam(requirePrecursor = TRUE,
+                                             tolerance = 0.1,
+                                             THRESHFUN = function(x)which(x >= 0.1))
+
+(rv <- MetaboAnnotation::matchSpectra(query = S, target = msp, param = csp))
+
+rv@matches$score |> hist()
+@
+\includegraphics[width=1.0\columnwidth, keepaspectratio]{Rposter-plot4}
+
+<<plot5, eval = TRUE, fig = TRUE, width=8, height=4, include=FALSE>>=
+bestMatch <- which(max(rv@matches$score) == rv@matches$score)[1]
+
+plotSpectraMirror(S[rv@matches[bestMatch,]$query_idx],
+                  msp[rv@matches[bestMatch,]$target_idx])
+@
+\includegraphics[width=1.0\columnwidth, keepaspectratio]{Rposter-plot5}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{small}
+%% \bibliographystyle{unsrt}
+%% \bibliographystyle{unsrturl}
+%% \bibliography{poster}
+\input posterbibitems
+\end{small}
+\end{multicols}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{-0.5cm}
+\resizebox{1.0\textwidth}{!}
+{
+Contact: 
+$^\diamond$
+\fgcz~
+Phone: +41 44 635 39 12,
+Fax: +41 44 635 39 22,
+EMail: \url{cp@fgcz.ethz.ch},
+URL: \url{https://fgcz.ethz.ch}.
+} 
+\end{document}
