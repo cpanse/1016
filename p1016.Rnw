@@ -1,0 +1,10 @@
+view: Rposter.pdf
+	open $<
+Rposter.pdf: Rposter.tex
+	pdflatex $< && pdflatex $< && pdflatex $<
+
+Rposter.tex: Rposter.Rnw poster.bib
+	R CMD Sweave $<
+clean:
+	$(RM) *.aux *.bbl *.blg *.log *.out *.pdf *.ps Rposter.tex
+	
